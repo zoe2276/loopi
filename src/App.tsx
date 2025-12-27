@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-      <h1>Loopi</h1>
+      <h2>loopi</h2>
       <div className="counter-container">
         <Counter title="Row" />
         <Counter title="Stitch" />

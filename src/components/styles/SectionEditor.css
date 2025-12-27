@@ -1,0 +1,8 @@
+.sectionEditor {
+
+    &.mini {
+        position:fixed;
+        top: 3.33vh;
+        left: 3.33vw;
+    }
+}

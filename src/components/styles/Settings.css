@@ -27,7 +27,7 @@
         background-color: #1a1a1a;
         border-radius: 12px 0px 0px 12px;
         display: none;
-        height: 100vh;
+        height: 90vh;
         padding-top: 2em;
         position: absolute;
         right: -50vw;
@@ -58,6 +58,18 @@
         position: absolute;
         right: 0;
         top: 0;
+    }
+
+    .settingsMenu-items {
+        list-style: none;
+        padding: 0;
+
+        & div {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: center;
+            margin-bottom: 8px;
+        }
     }
 }
 

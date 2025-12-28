@@ -1,3 +1,7 @@
+:root {
+    --accent-color: #524552;
+}
+
 @media only screen and (max-width: 400px) and (max-height: 400px) { /* mini displays */
     .counterButton-container {
         aspect-ratio: 1 / 1;
@@ -16,12 +20,13 @@
         border-radius: 12px 12px 0px 0px;
         height: 75%;
         left: 0;
+        outline: 1px solid var(--accent-color);
         position: absolute;
         width: 100%;
     
         &.subtract {
-            border-top: 1px solid #524552;
-            border-right: 1px solid #524552;
+            /* border-top: 1px solid #524552; */
+            /* border-right: 1px solid #524552; */
             border-radius: 0px 0px 0px 12px;
             height: 25%;
             padding: 0;
@@ -31,16 +36,12 @@
 
         &.reset {
             border-radius: 0px 0px 12px 0px;
-            border-top: 1px solid #524552;
+            /* border-top: 1px solid #524552; */
             height: 25%;
             left: 66.67%;
             padding: 0;
             top: 75%;
             width: 33.33%;
-
-            & svg > path {
-                color: currentColor;
-            }
         }
     }
 }

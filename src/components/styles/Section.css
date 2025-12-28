@@ -1,0 +1,28 @@
+.editSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.sectionEditor-input {
+    line-height: 1.33rem;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+    border: 1px solid #6a6a6a;
+    border-radius: 4px;
+
+    &:focus {
+        border-bottom: 3px solid #6a6a6a;   
+    }
+    
+    &.value {
+        width: 60%;
+    }
+    
+    &.row {
+        margin-left: 0.5rem;
+        width: 2.5rem;
+    }
+}

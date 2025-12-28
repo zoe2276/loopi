@@ -102,6 +102,10 @@
     display: flex;
     align-items: start;
     justify-content: center;
+
+    & ol {
+        width: 100%;
+    }
 }
 
 .sectionMenu-items {

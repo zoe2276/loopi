@@ -1,20 +1,22 @@
 import * as React from "react"
 import { FAIcon } from "./icons"
+import { Section } from "./Section"
 import "./styles/SectionEditor.css"
 
-interface Section {
+interface SectionLine {
     status: string,
-    value: string
+    value: string,
+    id: string
 }
 
 interface SectionEditorProps {
-    sections: Array<Section>,
-    setSections: React.Dispatch<React.SetStateAction<Array<Section>>>
+    sections: Array<SectionLine>,
+    setSections: React.Dispatch<React.SetStateAction<Array<SectionLine>>>
 }
 
 export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => {
     const [editing, setEditing] = React.useState(false)
-    const [cacheSection, setCacheSection] = React.useState(Array<Section>) // used to preserve previous state for discard ops
+    const [cacheSection, setCacheSection] = React.useState(Array<SectionLine>) // used to preserve previous state for discard ops
 
     const showSectionMenu = () => {
         const sectionMenu = document.getElementById("sectionMenu")
@@ -57,23 +59,28 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
     const resetSection = () => {
         if (confirm("Resetting this pattern can not be undone. Are you sure you want to continue?")) {
             setEditing(false)
-            setSections(new Array<Section>)
+            setSections(new Array<SectionLine>)
         }
     }
 
     const addNewRow = (idx: number = -1) => {
+        console.log("inserting at " + idx)
         const lSec = Array.from(sections)
         if (idx > -1) {
-            const beg = lSec.slice(0, idx)
-            const end = lSec.slice(idx +1, lSec.length - 1)
-            const newSec = { status: "incomplete", value: ""} as Section
-            beg.push(newSec)
-            end.forEach(sec => beg.push(sec))
-            setSections(beg)
+            lSec.splice(idx + 1, 0, { status: "incomplete", value: "", id: crypto.randomUUID()} as SectionLine)
         } else {
-            lSec.push({ status: "incomplete", value: "" } as Section)
-            setSections(lSec)
+            lSec.push({ status: "incomplete", value: "", id: crypto.randomUUID() } as SectionLine)
         }
+        setSections(lSec)
+        console.log(sections)
+    }
+
+    const removeRow = (idx: number) => {
+        console.log("removing at " + idx)
+        const lSec = Array.from(sections)
+        lSec.splice(idx, 1)
+        setSections(lSec)
+        console.log(sections)
     }
 
     return (
@@ -109,18 +116,8 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
                     { sections.length > 0 ?
                         <ol>
                             {
-                            sections.map((section, idx) => <li className={section.status}>{
-                                editing ?
-                                <div className="editSection">
-                                    <button>
-                                        <FAIcon iconName="pen" />
-                                    </button>
-                                    {section.value}
-                                    <button onClick={() => addNewRow(idx)}>
-                                        <FAIcon iconName="plus" />
-                                    </button>
-                                </div> :
-                                section.value}
+                            sections.map((section, idx) => <li key={section.id} style={{textAlign: "start"}} className={section.status}>
+                                <Section id={section.id} mode={editing ? "edit" : "view"} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
                                 </li>) 
                             }
                             {

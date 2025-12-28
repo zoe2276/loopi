@@ -3,7 +3,7 @@ import { FAIcon } from "./icons"
 import { Section } from "./Section"
 import "./styles/SectionEditor.css"
 
-interface SectionLine {
+export interface SectionLine {
     status: string,
     value: string,
     id: string
@@ -11,7 +11,7 @@ interface SectionLine {
 
 interface SectionEditorProps {
     sections: Array<SectionLine>,
-    setSections: React.Dispatch<React.SetStateAction<Array<SectionLine>>>
+    setSections: (upd: Array<SectionLine>) => void
 }
 
 export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => {

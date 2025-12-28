@@ -1,76 +1,77 @@
-@media only screen and (max-width: 400px) and (max-height: 400px) {
-    .settingsButton {
-        position:fixed;
-        top: 3.33vh;
-        right: 3.33vw;
+.settingsButton {
+    position:fixed;
+    top: 3.33vh;
+    right: 3.33vw;
+}
+
+#settingsMenu-underlay {
+    background-color: #0000;
+    height: 100vh;
+    left: 0px;
+    pointer-events: none;
+    position: absolute;
+    top: 0px;
+    width: 100vw;
+    z-index: 128;
+
+    transition: background-color 0.33s linear;
+
+    &.shown {
+        background-color: #000a;
+        pointer-events: auto;
+    }
+}
+
+#settingsMenu {
+    background-color: #1a1a1a;
+    border-radius: 12px 0px 0px 12px;
+    display: none;
+    height: calc(100vh - 2em);
+    padding-top: 2em;
+    position: absolute;
+    right: -50vw;
+    top: 0;
+    width: 50vw;
+    z-index: 256;
+
+    &.shown {
+        display: block;
+        right: 0px;
     }
 
-    #settingsMenu-underlay {
-        background-color: #0000;
-        height: 100vh;
-        left: 0px;
-        pointer-events: none;
-        position: absolute;
-        top: 0px;
-        width: 100vw;
-        z-index: 128;
-
-        transition: background-color 0.33s linear;
-
-        &.shown {
-            background-color: #000a;
-            pointer-events: auto;
-        }
-    }
-
-    #settingsMenu {
-        background-color: #1a1a1a;
-        border-radius: 12px 0px 0px 12px;
-        display: none;
-        height: 90vh;
-        padding-top: 2em;
-        position: absolute;
-        right: -50vw;
-        top: 0;
-        width: 50vw;
-        z-index: 256;
-
-        &.shown {
-            display: block;
-            right: 0px;
-        }
-
-        &.slideLeft {
-            display: block;
-            right: 0;
-            animation: slideLeft 0.33s ease-in-out both;
-        }
-        &.slideRight {
-            display: block;
-            right: 0;
-            animation: slideRight 0.33s ease-in-out both;
-        }
-
-    }
-
-    #settingsMenu-close {
-        padding: 0.3em 0.6em;
-        position: absolute;
+    &.slideLeft {
+        display: block;
         right: 0;
-        top: 0;
+        animation: slideLeft 0.33s ease-in-out both;
+    }
+    &.slideRight {
+        display: block;
+        right: 0;
+        animation: slideRight 0.33s ease-in-out both;
     }
 
-    .settingsMenu-items {
-        list-style: none;
-        padding: 0;
+}
 
-        & div {
-            display: flex;
-            flex-flow: column nowrap;
-            align-items: center;
-            margin-bottom: 8px;
-        }
+#settingsMenu-close {
+    padding: 0.3em 0.6em;
+    position: absolute;
+    right: 3.33vw;
+    top: 3.33vh;
+}
+
+.settingsMenu-items {
+    list-style: none;
+    padding: 0;
+
+    & div {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        margin-bottom: 8px;
     }
+}
+
+@media only screen and (max-width: 400px) and (max-height: 400px) {
 }
 
 @keyframes slideLeft {

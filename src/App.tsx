@@ -2,13 +2,14 @@ import { Counter } from './components/Counter'
 import './App.css'
 import { Settings } from './components/Settings'
 import { SectionEditor } from './components/SectionEditor'
+import * as React from 'react'
 
 function App() {
-
+  const [sections, setSections] = React.useState([])
   return (
     <>
       <div role="navigation">
-        <SectionEditor style="mini" />
+        <SectionEditor style="mini" sections={sections} setSections={setSections} />
         <Settings />
       </div>
       <h2>loopi</h2>

@@ -1,20 +1,24 @@
 import * as React from "react"
 import { FAIcon } from "./icons"
-import { Section } from "./Section"
+import { Section, type SectionDefinition } from "./Section"
+import { addData, getData } from "../composables/indDb"
+import { type Pattern } from "../App"
 import "./styles/SectionEditor.css"
 
 export interface SectionLine {
     status: string,
-    value: string,
+    definition: SectionDefinition,
     id: string
 }
 
 interface SectionEditorProps {
-    sections: Array<SectionLine>,
-    setSections: (upd: Array<SectionLine>) => void
+    sections: SectionLine[],
+    setSections: (upd: SectionLine[]|((upd: SectionLine[]) => SectionLine[])) => void
+    patterns: Pattern[]
+    setPatterns: (upd: Pattern[]) => void
 }
 
-export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => {
+export const SectionEditor = ({ sections, setSections, patterns, setPatterns }: SectionEditorProps) => {
     const [editing, setEditing] = React.useState(false)
     const [cacheSection, setCacheSection] = React.useState(Array<SectionLine>) // used to preserve previous state for discard ops
 
@@ -48,6 +52,18 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
     }
 
     const saveSection = () => {
+        const patternTitle = document.getElementById("sectionMenu-patternTitle") as HTMLInputElement
+        const title = patternTitle?.value
+
+        if (!title) {
+            if (confirm("Saving without a pattern title will not allow you to recover this pattern. Are you sure you would like to continue?")) {
+                setEditing(false)
+            }
+            return
+        }
+
+        savePattern(title, sections)
+        getData<Pattern>("Patterns").then((p: Pattern[]) => setPatterns(p))
         setEditing(false)
     }
 
@@ -67,9 +83,9 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
         console.log("inserting at " + idx)
         const lSec = Array.from(sections)
         if (idx > -1) {
-            lSec.splice(idx + 1, 0, { status: "incomplete", value: "", id: crypto.randomUUID()} as SectionLine)
+            lSec.splice(idx + 1, 0, { status: "incomplete", definition: { value: "", rows: ""}, id: crypto.randomUUID()} as SectionLine)
         } else {
-            lSec.push({ status: "incomplete", value: "", id: crypto.randomUUID() } as SectionLine)
+            lSec.push({ status: "incomplete", definition: { value: "", rows: ""}, id: crypto.randomUUID() } as SectionLine)
         }
         setSections(lSec)
         console.log(sections)
@@ -81,6 +97,25 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
         lSec.splice(idx, 1)
         setSections(lSec)
         console.log(sections)
+    }
+
+    const savePattern = async (name: string, definition: object) => {
+        try {
+            await addData("Patterns", { name, definition })
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                console.error(err.message)
+            } else {
+                console.error("something went wrong")
+            }
+        }
+    }
+
+    const handlePatternSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedPattern = patterns.find(pat => pat.name === e.target.value)
+        if (selectedPattern) {
+            setSections(selectedPattern.definition)
+        }
     }
 
     return (
@@ -95,15 +130,31 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
                 </button>
                 {
                     editing ?
-                    <div id="sectionMenu-actions">
-                        <button id="sectionMenu-discard" onClick={() => discardSection()}>
-                            <FAIcon iconName="delete-left" />
-                        </button>
-                        <button id="sectionMenu-save" onClick={() => saveSection()}>
-                            <FAIcon iconName="floppy-disk" />
-                        </button>
-                    </div> :
                     <>
+                        <div id="sectionMenu-patternTitle-container">
+                            <input id="sectionMenu-patternTitle" type="text" placeholder="Pattern Title" />
+                        </div>
+                        <div id="sectionMenu-actions">
+                            <button id="sectionMenu-discard" onClick={() => discardSection()}>
+                                <FAIcon iconName="delete-left" />
+                            </button>
+                            <button id="sectionMenu-save" onClick={() => saveSection()}>
+                                <FAIcon iconName="floppy-disk" />
+                            </button>
+                        </div>
+                    </> :
+                    <>
+                        <div id="sectionMenu-patternSelect-container">
+                            <select name="Patterns" id="sectionMenu-patternSelect" defaultValue={""} onChange={handlePatternSelect}>
+                                { patterns.length > 0 ?
+                                    <>
+                                    <option style={{display: "none"}}></option>
+                                    {patterns.map((elem: Pattern) => <option key={elem.name}>{elem.name}</option>) }
+                                    </> :
+                                    <option disabled>No saved patterns found.</option>
+                                }
+                            </select>
+                        </div>
                         <button id="sectionMenu-edit" onClick={() => enableSectionEditMode()}>
                             <FAIcon iconName="pen" />
                         </button>
@@ -117,7 +168,7 @@ export const SectionEditor = ({ sections, setSections }: SectionEditorProps) => 
                         <ol>
                             {
                             sections.map((section, idx) => <li key={section.id} style={{textAlign: "start"}} className={section.status}>
-                                <Section id={section.id} mode={editing ? "edit" : "view"} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
+                                <Section id={section.id} mode={editing ? "edit" : "view"} sectionLine={section} onChange={upd => setSections((prev: SectionLine[]) => prev.map((sec, i) => (i === idx ? upd : sec)))} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
                                 </li>) 
                             }
                             {

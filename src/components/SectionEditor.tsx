@@ -166,16 +166,19 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns }: 
                 <div id="sectionMenu-items-container">
                     { sections.length > 0 ?
                         <ol>
-                            {
+                            { !editing &&
                             sections.map((section, idx) => <li key={section.id} style={{textAlign: "start"}} className={section.status}>
                                 <Section id={section.id} mode={editing ? "edit" : "view"} sectionLine={section} onChange={upd => setSections((prev: SectionLine[]) => prev.map((sec, i) => (i === idx ? upd : sec)))} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
                                 </li>) 
                             }
                             {
                                 editing &&
-                                <button className="sectionMenu-addNewRow" onClick={() => addNewRow()}>
-                                    <FAIcon iconName="plus" />
-                                </button>
+                                <>
+                                    <button className="sectionMenu-addNewRow" onClick={() => addNewRow()}>
+                                        <FAIcon iconName="plus" />
+                                    </button>
+                                    <div className="sectionMenu-editDisabled">Use a larger screen to edit.</div>
+                                </>
                             }
                         </ol> : editing ? 
                             <>

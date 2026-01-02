@@ -1,7 +1,7 @@
 import * as React from "react"
 import "./styles/Counter.css"
-import { FAIcon } from "./icons";
-import type { SectionLine } from "./SectionEditor";
+import { FAIcon } from "./icons.tsx";
+import type { SectionLine } from "./SectionEditor.tsx";
 
 export interface ActiveSectionMap {
     prevSection: SectionLine | null,

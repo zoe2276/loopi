@@ -1,10 +1,10 @@
 import * as React from "react"
-import { FAIcon } from "./icons"
-import { Section, type SectionDefinition } from "./Section"
-import { addData, getData } from "../composables/indDb"
-import { type Pattern } from "../App"
+import { FAIcon } from "./icons.tsx"
+import { Section, type SectionDefinition } from "./Section.tsx"
+import { addData, getData } from "../composables/indDb.ts"
+import type { ActiveSectionMap } from "./Counter.tsx"
+import { type Pattern } from "../App.tsx"
 import "./styles/SectionEditor.css"
-import type { ActiveSectionMap } from "./Counter"
 
 export interface SectionLine {
     status: string,

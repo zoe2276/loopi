@@ -1,10 +1,10 @@
-import { Counter, type ActiveSectionMap } from './components/Counter'
-import './App.css'
-import { Settings } from './components/Settings'
-import { SectionEditor, type SectionLine } from './components/SectionEditor'
-import { SectionTicker } from "./components/SectionTicker"
-import { getData, initDb } from './composables/indDb'
 import * as React from 'react'
+import { Counter, type ActiveSectionMap } from './components/Counter.tsx'
+import './App.css'
+import { Settings } from './components/Settings.tsx'
+import { SectionEditor, type SectionLine } from './components/SectionEditor.tsx'
+import { SectionTicker } from "./components/SectionTicker.tsx"
+import { getData, initDb } from './composables/indDb.ts'
 
 export interface Pattern {
   name: string,

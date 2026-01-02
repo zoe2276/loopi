@@ -1,5 +1,5 @@
 import "./styles/SectionTicker.css"
-import type { ActiveSectionMap } from "./Counter"
+import type { ActiveSectionMap } from "./Counter.tsx"
 
 interface SectionTickerProps {
     activeSectionMap: ActiveSectionMap

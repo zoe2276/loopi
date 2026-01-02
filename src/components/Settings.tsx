@@ -1,5 +1,5 @@
 import * as React from "react"
-import { FAIcon } from "./icons"
+import { FAIcon } from "./icons.tsx"
 import "./styles/Settings.css"
 
 interface DefaultSettings {

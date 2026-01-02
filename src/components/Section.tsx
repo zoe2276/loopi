@@ -1,5 +1,5 @@
-import { FAIcon } from "./icons"
-import type { SectionLine } from "./SectionEditor"
+import { FAIcon } from "./icons.tsx"
+import type { SectionLine } from "./SectionEditor.tsx"
 import "./styles/Section.css"
 
 export interface SectionDefinition {

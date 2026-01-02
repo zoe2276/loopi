@@ -1,4 +1,3 @@
-import * as React from "react"
 import { FAIcon } from "./icons"
 import type { SectionLine } from "./SectionEditor"
 import "./styles/Section.css"

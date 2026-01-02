@@ -35,7 +35,7 @@ export const addData = <T>(storeName: string, data: T): Promise<T|string|null> =
             const tx = db.transaction(storeName, "readwrite")
             const store = tx.objectStore(storeName)
 
-            store.add(data)
+            store.put(data)
             res(data)
         }
 

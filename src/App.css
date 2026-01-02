@@ -1,9 +1,12 @@
 :root {
   --background-color: #df96a1;
+  --text-color: white;
+  --inactive-text-color: #fffa;
 }
 
 body {
   background-color: var(--background-color);
+  align-items: start;
 }
 
 #root {
@@ -21,6 +24,11 @@ h2 {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
+}
+
+.ticker-container {
+  padding-left: 5vw;
+  padding-top: 12px;
 }
 
 @media only screen and (max-width: 600px) and (max-height: 600px) {

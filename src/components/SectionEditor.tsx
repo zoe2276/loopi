@@ -4,21 +4,22 @@ import { Section, type SectionDefinition } from "./Section"
 import { addData, getData } from "../composables/indDb"
 import { type Pattern } from "../App"
 import "./styles/SectionEditor.css"
+import type { ActiveSectionMap } from "./Counter"
 
 export interface SectionLine {
     status: string,
-    definition: SectionDefinition,
-    id: string
+    definition: SectionDefinition
 }
 
 interface SectionEditorProps {
     sections: SectionLine[],
-    setSections: (upd: SectionLine[]|((upd: SectionLine[]) => SectionLine[])) => void
-    patterns: Pattern[]
-    setPatterns: (upd: Pattern[]) => void
+    setSections: (upd: SectionLine[]|((upd: SectionLine[]) => SectionLine[])) => void,
+    patterns: Pattern[],
+    setPatterns: (upd: Pattern[]) => void,
+    setActiveSectionMap: (upd: ActiveSectionMap) => void
 }
 
-export const SectionEditor = ({ sections, setSections, patterns, setPatterns }: SectionEditorProps) => {
+export const SectionEditor = ({ sections, setSections, patterns, setPatterns, setActiveSectionMap }: SectionEditorProps) => {
     const [editing, setEditing] = React.useState(false)
     const [cacheSection, setCacheSection] = React.useState(Array<SectionLine>) // used to preserve previous state for discard ops
 
@@ -44,6 +45,11 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns }: 
             sectionMenu.classList.remove("shown")
             sectionMenu?.classList.remove("slideOut")
         })
+        if (sections) setActiveSectionMap({
+            prevSection: null,
+            activeSection: sections[0],
+            nextSection: sections[1]
+        } as ActiveSectionMap)
     }
 
     const enableSectionEditMode = () => {
@@ -80,19 +86,19 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns }: 
     }
 
     const addNewRow = (idx: number = -1) => {
-        console.log("inserting at " + idx)
+        // console.log("inserting at " + idx)
         const lSec = Array.from(sections)
         if (idx > -1) {
-            lSec.splice(idx + 1, 0, { status: "incomplete", definition: { value: "", rows: ""}, id: crypto.randomUUID()} as SectionLine)
+            lSec.splice(idx + 1, 0, { status: "incomplete", definition: { value: "", rows: ""}, id: ""} as SectionLine)
         } else {
-            lSec.push({ status: "incomplete", definition: { value: "", rows: ""}, id: crypto.randomUUID() } as SectionLine)
+            lSec.push({ status: "incomplete", definition: { value: "", rows: ""}, id: "" } as SectionLine)
         }
         setSections(lSec)
         console.log(sections)
     }
 
     const removeRow = (idx: number) => {
-        console.log("removing at " + idx)
+        // console.log("removing at " + idx)
         const lSec = Array.from(sections)
         lSec.splice(idx, 1)
         setSections(lSec)
@@ -166,9 +172,9 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns }: 
                 <div id="sectionMenu-items-container">
                     { sections.length > 0 ?
                         <ol>
-                            { !editing &&
-                            sections.map((section, idx) => <li key={section.id} style={{textAlign: "start"}} className={section.status}>
-                                <Section id={section.id} mode={editing ? "edit" : "view"} sectionLine={section} onChange={upd => setSections((prev: SectionLine[]) => prev.map((sec, i) => (i === idx ? upd : sec)))} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
+                            {
+                            sections.map((section, idx) => <li key={idx} style={{textAlign: "start"}} className={section.status}>
+                                <Section id={idx.toString()} mode={editing ? "edit" : "view"} sectionLine={section} onChange={upd => setSections((prev: SectionLine[]) => prev.map((sec, i) => (i === idx ? upd : sec)))} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
                                 </li>) 
                             }
                             {

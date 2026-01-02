@@ -1,0 +1,7 @@
+.ticker {
+    line-height: 0.85rem;
+    text-align: start;
+    &.prevSection, &.nextSection {
+        color: var(--inactive-text-color)
+    }
+}

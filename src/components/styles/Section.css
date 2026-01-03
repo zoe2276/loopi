@@ -18,11 +18,13 @@
     }
     
     &.value {
-        width: 60%;
+        flex-grow: 1;
+        width: 1px;
     }
     
     &.row {
         margin-left: 0.5rem;
         width: 2.5rem;
+        flex-grow: 0;
     }
 }

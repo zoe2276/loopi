@@ -226,7 +226,7 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
                                 <button className="sectionMenu-addNewRow" onClick={() => addNewRow()}>
                                     <FAIcon iconName="plus" />
                                 </button>
-                                <div className="sectionMenu-editDisabled">Use a larger screen to edit.</div>
+                                <div className="sectionMenu-editDisabled">Use a larger screen to add rows.</div>
                             </div> : 
                             <div style={{display: "flex", fontStyle: "italic", justifyContent: "center"}}>No sections found.</div>
                     }

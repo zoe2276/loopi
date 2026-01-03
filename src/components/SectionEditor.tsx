@@ -5,14 +5,18 @@ import { addData, getData } from "../composables/indDb.ts"
 import type { ActiveSectionMap } from "./Counter.tsx"
 import { type Pattern } from "../App.tsx"
 import "./styles/SectionEditor.css"
+// import { RepeatSection } from "./RepeatSection.tsx"
+import { newIdFactory } from "../composables/secIdFactory.ts"
 
 export interface SectionLine {
+    id: string,
     status: string,
-    definition: SectionDefinition
+    definition: SectionDefinition|SectionLine[],
+    repeatCount: number
 }
 
 interface SectionEditorProps {
-    sections: SectionLine[],
+    sections: Array<SectionLine>,
     setSections: (upd: SectionLine[]|((upd: SectionLine[]) => SectionLine[])) => void,
     patterns: Pattern[],
     setPatterns: (upd: Pattern[]) => void,
@@ -21,6 +25,7 @@ interface SectionEditorProps {
 
 export const SectionEditor = ({ sections, setSections, patterns, setPatterns, setActiveSectionMap }: SectionEditorProps) => {
     const [editing, setEditing] = React.useState(false)
+    const [repeating, setRepeating] = React.useState<boolean>(false)
     const [cacheSection, setCacheSection] = React.useState(Array<SectionLine>) // used to preserve previous state for discard ops
 
     const showSectionMenu = () => {
@@ -47,14 +52,21 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
         })
         if (sections) setActiveSectionMap({
             prevSection: null,
-            activeSection: sections[0],
-            nextSection: sections[1]
+            activeSection: sections[0].definition as SectionDefinition,
+            nextSection: sections[1].definition as SectionDefinition
         } as ActiveSectionMap)
     }
 
     const enableSectionEditMode = () => {
         setEditing(true)
         setCacheSection(sections)
+    }
+
+    const toggleRepeat = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const newR = !repeating
+        setRepeating(newR)
+        const t = e.target as HTMLElement
+        newR ? t.classList.add("active") : t.classList.remove("active")
     }
 
     const saveSection = () => {
@@ -86,15 +98,28 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
     }
 
     const addNewRow = (idx: number = -1) => {
-        // console.log("inserting at " + idx)
+        const newRowData = repeating ? {
+            id: makeId(),
+            status: "incomplete",
+            definition: [],
+            repeatCount: 1
+        } as SectionLine : {
+            id: makeId(),
+            status: "incomplete",
+            definition: {
+                value: "",
+                rows: ""
+            },
+            repeatCount: 0
+        } as SectionLine
         const lSec = Array.from(sections)
         if (idx > -1) {
-            lSec.splice(idx + 1, 0, { status: "incomplete", definition: { value: "", rows: ""}, id: ""} as SectionLine)
+            lSec.splice(idx + 1, 0, newRowData)
         } else {
-            lSec.push({ status: "incomplete", definition: { value: "", rows: ""}, id: "" } as SectionLine)
+            lSec.push(newRowData)
         }
         setSections(lSec)
-        console.log(sections)
+        console.log(lSec)
     }
 
     const removeRow = (idx: number) => {
@@ -123,6 +148,8 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
             setSections(selectedPattern.definition)
         }
     }
+    
+    const makeId = React.useMemo(() => newIdFactory("sec"), [])
 
     return (
         <>
@@ -174,25 +201,33 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
                         <ol>
                             {
                             sections.map((section, idx) => <li key={idx} style={{textAlign: "start"}} className={section.status}>
-                                <Section id={idx.toString()} mode={editing ? "edit" : "view"} sectionLine={section} onChange={upd => setSections((prev: SectionLine[]) => prev.map((sec, i) => (i === idx ? upd : sec)))} handleAdd={() => addNewRow(idx)} handleRemove={() => removeRow(idx)} />
+                                <Section id={idx.toString()}
+                                    mode={editing ? "edit" : "view"}
+                                    sectionLine={section}
+                                    onChange={upd => setSections((prev: SectionLine[]) => prev.map((sec, i) => (i === idx ? upd : sec)))}
+                                    handleAdd={() => addNewRow(idx)}
+                                    handleRemove={() => removeRow(idx)} /> 
                                 </li>) 
                             }
                             {
                                 editing &&
-                                <>
+                                <div id="sectionMenu-actionButton-container">
                                     <button className="sectionMenu-addNewRow" onClick={() => addNewRow()}>
                                         <FAIcon iconName="plus" />
                                     </button>
+                                    <button id="sectionMenu-enableRepeat" onClick={e => toggleRepeat(e)}>
+                                        <FAIcon iconName="repeat" />
+                                    </button>
                                     <div className="sectionMenu-editDisabled">Use a larger screen to edit.</div>
-                                </>
+                                </div>
                             }
                         </ol> : editing ? 
-                            <>
+                            <div id="sectionMenu-actionButton-container">
                                 <button className="sectionMenu-addNewRow" onClick={() => addNewRow()}>
                                     <FAIcon iconName="plus" />
                                 </button>
                                 <div className="sectionMenu-editDisabled">Use a larger screen to edit.</div>
-                            </> : 
+                            </div> : 
                             <div style={{display: "flex", fontStyle: "italic", justifyContent: "center"}}>No sections found.</div>
                     }
                 </div>

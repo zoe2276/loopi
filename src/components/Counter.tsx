@@ -2,11 +2,12 @@ import * as React from "react"
 import "./styles/Counter.css"
 import { FAIcon } from "./icons.tsx";
 import type { SectionLine } from "./SectionEditor.tsx";
+import type { SectionDefinition } from "./Section.tsx";
 
 export interface ActiveSectionMap {
-    prevSection: SectionLine | null,
-    activeSection: SectionLine | null,
-    nextSection: SectionLine | null
+    prevSection: SectionDefinition | null,
+    activeSection: SectionDefinition | null,
+    nextSection: SectionDefinition | null
 }
 
 interface CounterProps {
@@ -20,19 +21,28 @@ export const Counter = ({ title, sections, setActiveSection }: CounterProps) => 
 
     const updateActiveSection = (c: number) => {
         if (title === "Row") {
-            const sectionMap: SectionLine[] = []
+            const sectionMap: SectionDefinition[] = []
             sections.forEach(section => {
-                for (let i = 0; i < parseInt(section.definition.rows); i++) {
-                    sectionMap.push(section)
+                for (let repI = 0; repI <= section.repeatCount; repI++) {
+                    for (let i = 0; i < parseInt((section.definition as SectionDefinition).rows || ((section.definition as SectionLine[])[0].definition as SectionDefinition).rows); i++) {
+                        section.repeatCount > 0 ? 
+                            (section.definition as SectionLine[]).forEach(sec => sectionMap.push(sec.definition as SectionDefinition)) :
+                            sectionMap.push(section.definition as SectionDefinition) 
+                    }
                 }
             })
-            const parentIndexOf = sections.indexOf(sectionMap[c])
-            const startIndex = parentIndexOf > 0 ? parentIndexOf - 1 : parentIndexOf
-            // console.log("start index", startIndex)
+            // const parentIndexOf = sections.indexOf(sectionMap[c])
+            // const startIndex = parentIndexOf > 0 ? parentIndexOf - 1 : parentIndexOf
+            // // console.log("start index", startIndex)
+            // const newActiveSection: ActiveSectionMap = {
+            //     prevSection: startIndex === -1 ? null : parentIndexOf === 0 ? null : sections[startIndex],
+            //     activeSection: startIndex === -1 ? null : parentIndexOf === 0 ? sections[startIndex] : sections[startIndex + 1],
+            //     nextSection: startIndex === -1 ? null : parentIndexOf === sections.length ? null : sections[startIndex + 2]
+            // }
             const newActiveSection: ActiveSectionMap = {
-                prevSection: startIndex === -1 ? null : parentIndexOf === 0 ? null : sections[startIndex],
-                activeSection: startIndex === -1 ? null : parentIndexOf === 0 ? sections[startIndex] : sections[startIndex + 1],
-                nextSection: startIndex === -1 ? null : parentIndexOf === sections.length ? null : sections[startIndex + 2]
+                prevSection: c === -1 ? null : c > 0 ? sectionMap[c-1] : null,
+                activeSection: c === -1 ? null : sectionMap[c],
+                nextSection: c === -1 ? null : c <= sectionMap.length ? sectionMap[c+1] : null
             }
             setActiveSection(newActiveSection)
         }

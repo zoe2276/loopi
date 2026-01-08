@@ -63,11 +63,23 @@
     list-style: none;
     padding: 0;
 
-    & div {
+    & > li > div {
         display: flex;
         flex-flow: column nowrap;
         align-items: center;
+        gap: 0.5rem;
         margin-bottom: 8px;
+    }
+}
+
+.settingsMenu-inputContainer {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 1rem;
+
+    & > button {
+        padding: 0.25rem 0.75rem;
     }
 }
 

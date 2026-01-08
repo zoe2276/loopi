@@ -40,6 +40,11 @@ export const Settings = () => {
         window.localStorage.setItem("userSettings", ss.textContent)
         */
     }
+    const resetStylesheet = (variable: keyof DefaultSettings) => {
+        updateStylesheet(variable, defaults[variable])
+        const inputEl = document.getElementById(`settingsMenu-${variable}`) as HTMLInputElement
+        inputEl.value = defaults[variable]
+    }
 
     const showSettingsMenu = () => {
         const settingsMenu = document.getElementById("settingsMenu")
@@ -100,8 +105,8 @@ export const Settings = () => {
                         <div>
                             Background Color
                             <div className="settingsMenu-inputContainer">
-                                <input type="color" onChange={e => updateStylesheet("background-color", e.target.value)} defaultValue={getStylesheet("background-color")} />
-                                <button onClick={() => updateStylesheet("background-color", defaults["background-color"])} >
+                                <input id="settingsMenu-background-color" type="color" onChange={e => updateStylesheet("background-color", e.target.value)} defaultValue={getStylesheet("background-color")} />
+                                <button onClick={() => resetStylesheet("background-color")} >
                                     <FAIcon iconName="rotate-left" />
                                 </button>
                             </div>
@@ -111,8 +116,8 @@ export const Settings = () => {
                         <div>
                             Accent Color
                             <div className="settingsMenu-inputContainer">
-                                <input type="color" onChange={e => updateStylesheet("accent-color", e.target.value)} defaultValue={getStylesheet("accent-color")} />
-                                <button onClick={() => updateStylesheet("accent-color", defaults["accent-color"])} >
+                                <input id="settingsMenu-accent-color" type="color" onChange={e => updateStylesheet("accent-color", e.target.value)} defaultValue={getStylesheet("accent-color")} />
+                                <button onClick={() => resetStylesheet("accent-color")} >
                                     <FAIcon iconName="rotate-left" />
                                 </button>
                             </div>

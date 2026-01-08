@@ -99,13 +99,23 @@ export const Settings = () => {
                     <li>
                         <div>
                             Background Color
-                            <input type="color" onChange={e => updateStylesheet("background-color", e.target.value)} defaultValue={getStylesheet("background-color")} />
+                            <div className="settingsMenu-inputContainer">
+                                <input type="color" onChange={e => updateStylesheet("background-color", e.target.value)} defaultValue={getStylesheet("background-color")} />
+                                <button onClick={() => updateStylesheet("background-color", defaults["background-color"])} >
+                                    <FAIcon iconName="rotate-left" />
+                                </button>
+                            </div>
                         </div>
                     </li>
                     <li>
                         <div>
                             Accent Color
-                            <input type="color" onChange={e => updateStylesheet("accent-color", e.target.value)} defaultValue={getStylesheet("accent-color")} />
+                            <div className="settingsMenu-inputContainer">
+                                <input type="color" onChange={e => updateStylesheet("accent-color", e.target.value)} defaultValue={getStylesheet("accent-color")} />
+                                <button onClick={() => updateStylesheet("accent-color", defaults["accent-color"])} >
+                                    <FAIcon iconName="rotate-left" />
+                                </button>
+                            </div>
                         </div>
                     </li>
                 </ul>

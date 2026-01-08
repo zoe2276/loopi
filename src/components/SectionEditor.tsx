@@ -20,10 +20,13 @@ interface SectionEditorProps {
     setSections: (upd: SectionLine[]|((upd: SectionLine[]) => SectionLine[])) => void,
     patterns: Pattern[],
     setPatterns: (upd: Pattern[]) => void,
-    setActiveSectionMap: (upd: ActiveSectionMap) => void
+    notes: string[],
+    setNotes: (upd: string[]|((upd: string[]) => string[])) => void,
+    setActivePatternTitle: (upd: string) => void
+    setActiveSectionMap: (upd: ActiveSectionMap) => void,
 }
 
-export const SectionEditor = ({ sections, setSections, patterns, setPatterns, setActiveSectionMap }: SectionEditorProps) => {
+export const SectionEditor = ({ sections, setSections, patterns, setPatterns, notes, setNotes, setActiveSectionMap, setActivePatternTitle }: SectionEditorProps) => {
     const [editing, setEditing] = React.useState(false)
     const [repeating, setRepeating] = React.useState<boolean>(false)
     const [cacheSection, setCacheSection] = React.useState(Array<SectionLine>) // used to preserve previous state for discard ops
@@ -80,7 +83,7 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
             return
         }
 
-        savePattern(title, sections)
+        savePattern(title, sections, notes)
         getData<Pattern>("Patterns").then((p: Pattern[]) => setPatterns(p))
         setEditing(false)
     }
@@ -130,9 +133,9 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
         console.log(sections)
     }
 
-    const savePattern = async (name: string, definition: object) => {
+    const savePattern = async (name: string, definition: object, notes: string[]) => {
         try {
-            await addData("Patterns", { name, definition })
+            await addData("Patterns", { name, definition, notes })
         } catch (err: unknown) {
             if (err instanceof Error) {
                 console.error(err.message)
@@ -146,6 +149,8 @@ export const SectionEditor = ({ sections, setSections, patterns, setPatterns, se
         const selectedPattern = patterns.find(pat => pat.name === e.target.value)
         if (selectedPattern) {
             setSections(selectedPattern.definition)
+            setNotes(selectedPattern.notes ?? ["","","","","",""])
+            setActivePatternTitle(e.target.value)
         }
     }
     

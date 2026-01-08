@@ -47,7 +47,6 @@ function App() {
     const definition = sections
     const name = activePatternTitle
     const updVal = typeof upd === "function" ? upd(notes) : upd
-    console.log({ name, definition, notes: updVal })
     try {
         await addData("Patterns", { name, definition, notes: updVal })
     } catch (err: unknown) {
@@ -57,6 +56,7 @@ function App() {
             console.error("something went wrong")
         }
     }
+    getData<Pattern>("Patterns").then((p: Pattern[]) => setPatterns(p))
   }
 
   React.useEffect(() => {
